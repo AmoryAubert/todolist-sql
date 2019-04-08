@@ -1,0 +1,17 @@
+html{
+  margin: 0 20px;
+}
+p{
+  margin: 2px 0 3px;
+  padding: 0;
+}
+#content{
+  overflow-y:scroll;
+  height: 200px;
+}
+#ajout{
+  line-height: 20px;
+}
+legend{
+  margin: 0;
+}
