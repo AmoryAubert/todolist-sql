@@ -1,16 +1,22 @@
 html{
   margin: 0 20px;
 }
-p{
+.todop, .isdop{
   margin: 2px 0 3px;
   padding: 0;
 }
-#content{
+#afaire,#archive{
   overflow-y:scroll;
-  height: 200px;
+  max-height: 200px;
+}
+.isdop{
+  text-decoration: line-through;
+  color: #666;
 }
 #ajout{
   line-height: 20px;
+  text-align: center;
+  display:table-cell;
 }
 legend{
   margin: 0;
