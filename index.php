@@ -113,8 +113,8 @@ if(isset($_POST['ajout'])){
 <form id="Add" method="post" action="index.php">
     <fieldset class="border border-primary p-3">
         <legend class="w-auto">Ajouter</legend>
-        <input type="text" name="task" required class="col-md-6">
-		<input type="datetime-local" class="col-md-3 deadtime" name="deadline" value="2019-04-01T17:00" required>
+        <input type="text" name="task" required class="col-md-6 adt">
+		<input type="datetime-local" class="col-md-3 deadtime adt" name="deadline" value="2019-04-01T17:00" required>
         <input type="submit" value="Ajouter" name="ajout" id="ajout" class="col-md-9">
     </fieldset>
 </form>
