@@ -1,13 +1,37 @@
+@import url('https://fonts.googleapis.com/css?family=Lobster|Pacifico');
+*{
+  text-align: center;
+}
+h1, legend, .legend{
+  font-family: 'Lobster', cursive;
+}
+h1{
+  margin: 0 0 -8px;
+  padding: 0;
+  text-decoration: underline;
+}
+.legend{
+  margin: -14px 0 4px;
+}
 html{
   margin: 0 20px;
+  max-height: 100%;
 }
 .todop, .isdop{
   margin: 2px 0 3px;
   padding: 0;
+  text-align: left;
+}
+i{
+  margin-left: 10px;
+}
+.main{
+  overflow-y:scroll;
+  max-height: 120px;
+  font-family: 'Pacifico', cursive;
 }
 #afaire,#archive{
-  overflow-y:scroll;
-  max-height: 200px;
+  margin: 0 auto;
 }
 .isdop{
   text-decoration: line-through;
@@ -17,7 +41,23 @@ html{
   line-height: 20px;
   text-align: center;
   display:table-cell;
+  margin-top: 6px;
 }
 legend{
   margin: 0;
+}
+.deadline{
+  color: red;
+  font-size: 1em;
+}
+.warning{
+  color: yellow;
+  font-size: 1em;
+}
+.italic{
+  font-style: italic;
+  color: #666;
+}
+.deadtime{
+  text-align: center;
 }
