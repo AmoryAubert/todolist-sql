@@ -9,8 +9,8 @@ catch(Exception $e)
 	// En cas d'erreur, on affiche un message et on arrête tout
     die('Erreur : '.$e->getMessage());
 }
-function todo(){
-    $bdd = new PDO('mysql:host=localhost;dbname=Becode;charset=utf8', 'Amory', 'user');
+function todo($bdd){
+    //$bdd = new PDO('mysql:host=localhost;dbname=Becode;charset=utf8', 'Amory', 'user');
     $data = $bdd->query("SELECT * FROM ToDoList WHERE DO='0'")->fetchAll();
 	date_default_timezone_set('Europe/Brussels');
 	$dateOfTheDay = date('Y-m-d H:i:s', time());
@@ -35,8 +35,8 @@ function todo(){
 		}
     }
 }
-function isdo(){
-    $bdd = new PDO('mysql:host=localhost;dbname=Becode;charset=utf8', 'Amory', 'user');
+function isdo($bdd){
+    //$bdd = new PDO('mysql:host=localhost;dbname=Becode;charset=utf8', 'Amory', 'user');
     $data = $bdd->query("SELECT * FROM ToDoList WHERE DO='1'")->fetchAll();
     // and somewhere later:
     foreach ($data as $key => $row) {
@@ -44,9 +44,9 @@ function isdo(){
     }
 }
 if(isset($_POST['afaire'])){
-	$todelete = $_POST['DO']; 
+	$toupdate = $_POST['DO']; 
 	$stmt = $bdd->prepare("UPDATE ToDoList SET DO='1' WHERE ID = :ID");
-	foreach ($todelete as $id)
+	foreach ($toupdate as $id)
     $stmt->execute(array(":ID" => $id));
 	header('Location: index.php');
     exit();
@@ -62,12 +62,20 @@ if(isset($_POST['ajout'])){
        $result[$key]=trim($result[$key]);
     }
     $data = [
-        'TASK' => $result['task'],
+        'TASK' => ucfirst($result['task']),
         'DO' => '0',
 		'DEADLINE' => $deadtime,
     ];
     $sql = "INSERT INTO ToDoList (TASK, DO, DEADLINE) VALUES (:TASK, :DO, :DEADLINE)";
     $bdd->prepare($sql)->execute($data);
+	header('Location: index.php');
+    exit();
+}
+if(isset($_POST['delete'])){
+	$todelete = $_POST['DO']; 
+	$stmt = $bdd->prepare("DELETE FROM ToDoList WHERE ID = :ID");
+	foreach ($todelete as $id)
+    $stmt->execute(array(":ID" => $id));
 	header('Location: index.php');
     exit();
 }
@@ -86,7 +94,7 @@ if(isset($_POST['ajout'])){
 </head>
 <body>
 <!--<i class="fas fa-exclamation-triangle"></i>-->
-<h1>ToDo List</h1>
+<h1><i class="far fa-list-alt left"></i>ToDo List<i class="far fa-list-alt right"></i></h1>
 <form id="ToDo" method="post" action="index.php">
     <fieldset class="border border-primary p-3 ToDo">
         <legend class="w-auto">A Faire</legend>
@@ -96,16 +104,17 @@ if(isset($_POST['ajout'])){
 		</p>
 		<div class="main">
 			<div id="afaire" class="col-md-6">
-				<?php todo(); ?>
+				<?php todo($bdd); ?>
 			</div>
 		</div>
 		<input type="submit" value="Archiver" name="afaire">
+		<input type="submit" value="Supprimer" name="delete">
     </fieldset>
     <fieldset class="border border-primary p-3">
         <legend class="w-auto">Archive</legend>
 		<div class="main">
 			<div id="archive" class="col-md-6">
-				<?php isdo(); ?>
+				<?php isdo($bdd); ?>
 			</div>
 		</div>
     </fieldset>
