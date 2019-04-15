@@ -14,6 +14,8 @@ function todo($bdd){
     $data = $bdd->query("SELECT * FROM ToDoList WHERE DO='0'")->fetchAll();
 	date_default_timezone_set('Europe/Brussels');
 	$dateOfTheDay = date('Y-m-d H:i:s', time());
+	//$dateTest = date_create('2000-01-01'.'17:00:00');
+	//echo date_format($dateTest, 'Y-m-d H:i:s');
 	$datetime1 = new DateTime($dateOfTheDay);
     foreach ($data as $key => $row) {
 		if ($row['DEADLINE']==''){
@@ -23,13 +25,13 @@ function todo($bdd){
 			$interval = $datetime1->diff($datetime2);
 			$dateDeadline = $datetime2->format('d-m-Y H:i:s');
 			if ((($interval->d)>=1) && ($datetime1<$datetime2)){
-				echo "<p class='todop'><input type='checkbox' name='DO[]' value='".$row['ID']."' class='checkbox'>".$row['TASK'].
+				echo "<p class='todop'><input type='checkbox' name='DO[]' value='".$row['ID']."' class='custom-cursor'>".$row['TASK'].
 				"<i></i><span class='italic'>Deadline: ".$dateDeadline."</span></p>";
 			} else if ((($interval->d)==0) && ($datetime1<$datetime2)){
-				echo "<p class='todop'><input type='checkbox' name='DO[]' value='".$row['ID']."' class='checkbox'>".$row['TASK'].
+				echo "<p class='todop'><input type='checkbox' name='DO[]' value='".$row['ID']."' class='custom-cursor'>".$row['TASK'].
 				"<i class='fas fa-exclamation-triangle warning'></i><span class='italic'>Deadline: ".$dateDeadline."</span></p>";
 			} else if ((($interval->d)>=0) && ($datetime1>=$datetime2)){
-				echo "<p class='todop'><input type='checkbox' name='DO[]' value='".$row['ID']."' class='checkbox'>".$row['TASK'].
+				echo "<p class='todop'><input type='checkbox' name='DO[]' value='".$row['ID']."' class='custom-cursor'>".$row['TASK'].
 				"<i class='fas fa-exclamation-triangle deadline'></i><span class='italic'>Deadline: ".$dateDeadline."</span></p>";
 			}
 		}

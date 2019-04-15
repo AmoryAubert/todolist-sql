@@ -19,6 +19,9 @@ fieldset{
 input[type=checkbox]{
   margin-right: 6px;
 }
+p:hover{
+  cursor: url(../img/pencil-alt-solid.png);
+}
 .left{
   margin-right: 15px;
 }
@@ -117,6 +120,9 @@ form::-webkit-scrollbar-track {
   background-image: url(../img/align-justify-solid.svg);
   background-position: center;
   background-size: 15px 15px;
+}
+.custom-cursor {
+  cursor: url(../img/pencil-alt-solid.png) 4 12, auto;
 }
 @keyframes blink {
   0%   {opacity: 1;}
