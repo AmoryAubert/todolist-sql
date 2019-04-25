@@ -1,86 +1,43 @@
 <?php
-try
-{
-	// On se connecte à MySQL
-	$bdd = new PDO('mysql:host=localhost;dbname=Becode;charset=utf8', 'Amory', 'user');
-}
-catch(Exception $e)
-{
-	// En cas d'erreur, on affiche un message et on arrête tout
-    die('Erreur : '.$e->getMessage());
-}
-function todo($bdd){
-    //$bdd = new PDO('mysql:host=localhost;dbname=Becode;charset=utf8', 'Amory', 'user');
-    $data = $bdd->query("SELECT * FROM ToDoList WHERE DO='0'")->fetchAll();
-	date_default_timezone_set('Europe/Brussels');
-	$dateOfTheDay = date('Y-m-d H:i:s', time());
-	//$dateTest = date_create('2000-01-01'.'17:00:00');
-	//echo date_format($dateTest, 'Y-m-d H:i:s');
-	$datetime1 = new DateTime($dateOfTheDay);
-    foreach ($data as $key => $row) {
-		if ($row['DEADLINE']==''){
-			echo "<p class='todop'><input type='checkbox' name='DO[]' value='".$row['ID']."' class='checkbox'>".$row['TASK']."</p>";
-		} else {
-			$datetime2 = new DateTime($row['DEADLINE']);
-			$interval = $datetime1->diff($datetime2);
-			$dateDeadline = $datetime2->format('d-m-Y H:i:s');
-			if ((($interval->d)>=1) && ($datetime1<$datetime2)){
-				echo "<p class='todop'><input type='checkbox' name='DO[]' value='".$row['ID']."' class='custom-cursor'>".$row['TASK'].
-				"<i></i><span class='italic'>Deadline: ".$dateDeadline."</span></p>";
-			} else if ((($interval->d)==0) && ($datetime1<$datetime2)){
-				echo "<p class='todop'><input type='checkbox' name='DO[]' value='".$row['ID']."' class='custom-cursor'>".$row['TASK'].
-				"<i class='fas fa-exclamation-triangle warning'></i><span class='italic'>Deadline: ".$dateDeadline."</span></p>";
-			} else if ((($interval->d)>=0) && ($datetime1>=$datetime2)){
-				echo "<p class='todop'><input type='checkbox' name='DO[]' value='".$row['ID']."' class='custom-cursor'>".$row['TASK'].
-				"<i class='fas fa-exclamation-triangle deadline'></i><span class='italic'>Deadline: ".$dateDeadline."</span></p>";
-			}
-		}
+$json = file_get_contents("assets/json/todolist.json");
+$parsed_json = json_decode($json,false);
+function todo($parsed_json){
+    foreach ($parsed_json as $value => $row){
+        if ($parsed_json[$value]->{'DO'} == 0){
+            echo "<p class='todop'><input type='checkbox' name='DO[]' value='".$parsed_json[$value]->{'TACHE'}."' class='checkbox'>".$parsed_json[$value]->{'TACHE'}."</p>";   
+        }
     }
 }
-function isdo($bdd){
-    //$bdd = new PDO('mysql:host=localhost;dbname=Becode;charset=utf8', 'Amory', 'user');
-    $data = $bdd->query("SELECT * FROM ToDoList WHERE DO='1'")->fetchAll();
-    // and somewhere later:
-    foreach ($data as $key => $row) {
-        echo "<p class='isdop'><input type='checkbox' value='".$row['ID']."' class='checkbox' disabled='disabled' checked='checked'>".$row['TASK']."</p>";
+function isdo($parsed_json){
+    foreach ($parsed_json as $value => $row){
+        if ($parsed_json[$value]->{'DO'} == 1){
+            echo "<p class='isdop'><input type='checkbox' value='".$parsed_json[$value]->{'TACHE'}."' class='checkbox' disabled='disabled' checked='checked'>".$parsed_json[$value]->{'TACHE'}."</p>";
+        }
     }
-}
-if(isset($_POST['afaire'])){
-	$toupdate = $_POST['DO']; 
-	$stmt = $bdd->prepare("UPDATE ToDoList SET DO='1' WHERE ID = :ID");
-	foreach ($toupdate as $id)
-    $stmt->execute(array(":ID" => $id));
-	header('Location: index.php');
-    exit();
 }
 if(isset($_POST['ajout'])){
-	$deadtime = $_POST['deadline'];
+	//$deadtime = $_POST['deadline'];
     $options = array(
         'task' => FILTER_SANITIZE_STRING
     );
     $result = filter_input_array(INPUT_POST, $options);
     foreach($options as $key => $value) 
     {
-       $result[$key]=trim($result[$key]);
+        $result[$key]=trim($result[$key]);
     }
-    $data = [
-        'TASK' => ucfirst($result['task']),
-        'DO' => '0',
-		'DEADLINE' => $deadtime,
-    ];
-    $sql = "INSERT INTO ToDoList (TASK, DO, DEADLINE) VALUES (:TASK, :DO, :DEADLINE)";
-    $bdd->prepare($sql)->execute($data);
-	header('Location: index.php');
-    exit();
+    $json_arr = json_decode($json, true);
+    //var_dump($json_arr.length);
+    $json_arr[] = array('TACHE'=>ucfirst($result['task']), 'DATE'=>'22-06', 'DO'=>0);
+    //var_dump($newline);
+    // $parsed_json[$newline]->{'ID'} = $newline;
+    // $parsed_json[$newline]->{'TACHE'} = ucfirst($result['task']);
+    // $parsed_json[$newline]->{'DATE'} = "22-06";
+    // $parsed_json[$newline]->{'DO'} = 0;
+    file_put_contents('todolist.json', json_encode($json_arr));
+    // header('Location: index.php');
+    // exit();
 }
-if(isset($_POST['delete'])){
-	$todelete = $_POST['DO']; 
-	$stmt = $bdd->prepare("DELETE FROM ToDoList WHERE ID = :ID");
-	foreach ($todelete as $id)
-    $stmt->execute(array(":ID" => $id));
-	header('Location: index.php');
-    exit();
-}
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -95,7 +52,6 @@ if(isset($_POST['delete'])){
     <title>ToDo List</title>
 </head>
 <body>
-<!--<i class="fas fa-exclamation-triangle"></i>-->
 <h1><i class="far fa-list-alt left"></i>ToDo List<i class="far fa-list-alt right"></i></h1>
 <form id="ToDo" method="post" action="index.php">
     <fieldset class="border border-primary p-3 ToDo">
@@ -106,7 +62,7 @@ if(isset($_POST['delete'])){
 		</p>
 		<div class="main">
 			<div id="afaire" class="col-md-6">
-				<?php todo($bdd); ?>
+				<?php todo($parsed_json) ?>
 			</div>
 		</div>
 		<input type="submit" value="Archiver" name="afaire">
@@ -116,7 +72,7 @@ if(isset($_POST['delete'])){
         <legend class="w-auto">Archive</legend>
 		<div class="main">
 			<div id="archive" class="col-md-6">
-				<?php isdo($bdd); ?>
+				<?php isdo($parsed_json) ?>
 			</div>
 		</div>
     </fieldset>

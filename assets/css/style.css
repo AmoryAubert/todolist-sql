@@ -110,19 +110,10 @@ form::-webkit-scrollbar-track {
 }
 ::-webkit-scrollbar-thumb {
   background: #999;
-  background-image: url(../img/align-justify-solid.svg);
-  background-position: center;
-  background-size: 30px 30px;
   border-radius: 50px 0 0 50px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #666;
-  background-image: url(../img/align-justify-solid.svg);
-  background-position: center;
-  background-size: 15px 15px;
-}
-.custom-cursor {
-  cursor: url(../img/pencil-alt-solid.png) 4 12, auto;
+  background: #444;
 }
 @keyframes blink {
   0%   {opacity: 1;}
